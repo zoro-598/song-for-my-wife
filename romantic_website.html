@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>For My Wife ❤️</title>
+  <style>
+    :root{--bg:#0b0326;--accent:#ff6b9a;--soft:#ffe6f0}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;color:white;background:linear-gradient(180deg, #0b0326 0%, #1a072f 100%);overflow:hidden}
+    .stage{position:relative;width:100%;height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:24px;box-sizing:border-box}
+    h1{font-size:clamp(28px,6vw,56px);margin:8px 0;letter-spacing:0.02em}
+    p.lead{font-size:clamp(14px,2.2vw,20px);opacity:0.95;margin:8px 0 24px}
+
+    /* hearts background */
+    .hearts{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+    .heart{position:absolute;will-change:transform,opacity;animation:rise 8s linear infinite;opacity:0}
+    @keyframes rise{
+      0%{transform:translateY(120vh) scale(.6) rotate(0);opacity:0}
+      5%{opacity:1}
+      100%{transform:translateY(-40vh) scale(1.2) rotate(360deg);opacity:0}
+    }
+
+    /* card */
+    .card{backdrop-filter:blur(6px);background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));padding:28px;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,0.5);max-width:920px;width:100%;}
+    .banner{display:flex;gap:18px;align-items:center}
+    .avatar{width:120px;height:120px;border-radius:12px;flex:0 0 120px;object-fit:cover;background:linear-gradient(135deg,var(--accent),#ffd1e6);border:4px solid rgba(255,255,255,0.06)}
+    .meta{text-align:left}
+    .meta h2{margin:0;font-size:20px}
+    .meta p{margin:6px 0 0;font-size:14px;color:var(--soft)}
+
+    /* slides */
+    .slideshow{position:relative;margin-top:18px;border-radius:12px;overflow:hidden;height:360px}
+    .slide{position:absolute;inset:0;transition:opacity .9s ease;opacity:0;background-size:cover;background-position:center}
+    .slide.show{opacity:1}
+    .caption{position:absolute;left:16px;bottom:18px;background:rgba(0,0,0,0.35);padding:12px 14px;border-radius:10px;font-size:16px}
+
+    /* controls */
+    .controls{display:flex;gap:10px;justify-content:center;margin-top:14px}
+    .btn{background:linear-gradient(90deg,var(--accent),#ff9cc6);border:none;padding:10px 16px;border-radius:999px;font-weight:600;cursor:pointer}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06)}
+
+    /* poem */
+    .poem{margin-top:18px;text-align:left;line-height:1.5;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:10px}
+
+    /* small */
+    .footer{margin-top:12px;font-size:12px;color:rgba(255,255,255,0.6)}
+
+    /* responsive */
+    @media (max-width:720px){.banner{flex-direction:row}.meta{text-align:left}}
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="hearts" id="hearts"></div>
+
+    <div class="card" id="card">
+      <div class="banner">
+        <!-- Replace 'images/hero.jpg' with your photo filename (upload to same folder) -->
+        <img src="images/hero.jpg" alt="Her photo" class="avatar" id="avatar" onerror="this.style.display='none'">
+        <div class="meta">
+          <h2>For my wife — <span id="wifeName">Jailene</span></h2>
+          <p class="lead">A little story, some memories, and a song — open your heart and press play.</p>
+        </div>
+      </div>
+
+      <div class="slideshow" id="slideshow" aria-hidden="false">
+        <!-- Slides: replace these background images with your own (images/1.jpg, images/2.jpg...) -->
+        <div class="slide show" style="background-image:url('images/1.jpg')"><div class="caption">Our first smile together</div></div>
+        <div class="slide" style="background-image:url('images/2.jpg')"><div class="caption">A moment I won't forget</div></div>
+        <div class="slide" style="background-image:url('images/3.jpg')"><div class="caption">Forever starts now</div></div>
+      </div>
+
+      <div class="controls">
+        <button class="btn" id="playBtn">▶ Play song</button>
+        <button class="btn ghost" id="pauseBtn">⏸ Pause</button>
+        <button class="btn ghost" id="fullBtn">⤢ Fullscreen</button>
+      </div>
+
+      <div class="poem" id="poem">
+        <strong>A little message:</strong>
+        <p>I love you more than words. Every day with you is my favorite day. Thank you for being my smile, my calm, and my home.</p>
+      </div>
+
+      <div class="footer">Tip: Replace images in the <code>images/</code> folder and the audio file in the page root. Upload to GitHub Pages or open locally to preview.</div>
+    </div>
+
+    <!-- Hidden audio element. Place the mp3 file in the same folder and keep this file name, or update the path in the HTML below. -->
+    <audio id="audio" src="Arctic-Monkeys-I-Wanna-Be-Yours-(RawPraise.ng).mp3" preload="auto"></audio>
+  </div>
+
+  <script>
+    // --- helper: create floating hearts ---
+    const heartsEl = document.getElementById('hearts');
+    function makeHeart(){
+      const el = document.createElement('div');
+      el.className='heart';
+      const size = Math.random()*30 + 16;
+      el.style.width = size+'px';
+      el.style.height = size+'px';
+      el.style.left = Math.random()*100 + '%';
+      el.style.animationDuration = (6 + Math.random()*6) + 's';
+      el.style.opacity = (0.6 + Math.random()*0.4);
+      el.style.transform = 'translateY(0)';
+      el.innerHTML = '❤';
+      el.style.fontSize = size+'px';
+      heartsEl.appendChild(el);
+      setTimeout(()=>el.remove(), 12000);
+    }
+    setInterval(makeHeart, 450);
+
+    // --- slideshow ---
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    let idx = 0;
+    setInterval(()=>{
+      slides[idx].classList.remove('show');
+      idx = (idx+1)%slides.length;
+      slides[idx].classList.add('show');
+    },5000);
+
+    // --- audio controls ---
+    const audio = document.getElementById('audio');
+    const playBtn = document.getElementById('playBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const fullBtn = document.getElementById('fullBtn');
+
+    playBtn.addEventListener('click', async ()=>{
+      try{ await audio.play(); }
+      catch(e){ /* autoplay blocked; user gesture required */ }
+    });
+    pauseBtn.addEventListener('click', ()=>audio.pause());
+
+    // toggle fullscreen
+    fullBtn.addEventListener('click', ()=>{
+      if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    });
+
+    // small accessibility: enable spacebar to toggle play/pause
+    window.addEventListener('keydown', e=>{
+      if(e.code==='Space'){
+        e.preventDefault();
+        if(audio.paused) audio.play(); else audio.pause();
+      }
+    });
+
+    // Make the file usable immediately if user's images are missing
+    window.addEventListener('load', ()=>{
+      const avatar = document.getElementById('avatar');
+      if(avatar.style.display==='none'){
+        // create a soft placeholder circle
+        const ph = document.createElement('div');
+        ph.style.width='120px';ph.style.height='120px';ph.style.borderRadius='12px';ph.style.background='linear-gradient(135deg,#ff7fa3,#ffcfe6)';ph.style.flex='0 0 120px';
+        const banner = document.querySelector('.banner');
+        banner.insertBefore(ph,banner.firstChild);
+      }
+    });
+
+    // ----- Quick personalization (optional) -----
+    // If you want to set the wife's name from the URL: ?name=Jailene
+    const qp = new URLSearchParams(location.search);
+    if(qp.get('name')) document.getElementById('wifeName').textContent = qp.get('name');
+
+    // End script
+  </script>
+
+  <!--
+    HOW TO USE:
+    1) Save this file as index.html in your GitHub Pages repository root (or a folder) so it becomes your site.
+    2) Put the MP3 file (Arctic-Monkeys-I-Wanna-Be-Yours-(RawPraise.ng).mp3) in the same folder as this HTML file.
+    3) Add your photos in an "images/" folder with filenames: 1.jpg, 2.jpg, 3.jpg and hero.jpg (or edit paths below).
+    4) Commit & push; visit your GitHub Pages URL. If audio doesn't autoplay, click the Play button.
+    5) Optional: edit the text inside the poem div to personalize.
+  -->
+</body>
+</html>
